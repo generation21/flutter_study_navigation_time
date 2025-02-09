@@ -12,22 +12,33 @@ class WriteScreen extends StatefulWidget {
 
 class _WriteScreenState extends State<WriteScreen> {
   final TextEditingController _textEditingController = TextEditingController();
-  final double _lineHeight = 20.0;
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _focusNode = FocusNode();
   int lineCount = 1;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
     _textEditingController.addListener(() {
       setState(() {
         lineCount = _textEditingController.text.split('\n').length;
       });
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     });
   }
 
   @override
   void dispose() {
+    _focusNode.dispose();
     _textEditingController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -57,7 +68,7 @@ class _WriteScreenState extends State<WriteScreen> {
     final size = MediaQuery.of(context).size;
 
     return Container(
-      height: size.height * 0.9,
+      height: size.height * 0.8,
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -65,143 +76,152 @@ class _WriteScreenState extends State<WriteScreen> {
           topRight: Radius.circular(20),
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          leadingWidth: 80,
-          leading: TextButton(
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.only(left: Sizes.size16),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            leadingWidth: 80,
+            leading: TextButton(
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.only(left: Sizes.size16),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
               ),
             ),
-          ),
-          title: const Text(
-            'New thread',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+            title: const Text(
+              'New thread',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
+            centerTitle: true,
           ),
-          centerTitle: true,
-        ),
-        body: Stack(
-          children: [
-            Divider(
-              color: Colors.grey.shade300,
-              thickness: 1,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(Sizes.size16),
-              child: LayoutBuilder(builder: (context, constraints) {
-                double availableTextWidth = constraints.maxWidth - (2 + 8);
-                int lineCount = computeLineCount(availableTextWidth);
-                double containerHeight = lineCount * _lineHeight;
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
+          body: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                const Divider(
+                  color: Colors.grey,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CircleAvatar(
-                          radius: 20,
-                          backgroundImage: AssetImage(
-                            "assets/profile_images/image1.jpeg",
-                          ),
-                        ),
-                        Gaps.v10,
-                        Container(
-                          color: Colors.grey.shade300,
-                          width: 2,
-                          height: lineCount * _lineHeight,
-                        ),
-                        Gaps.v10,
-                        ColorFiltered(
-                          colorFilter: ColorFilter.mode(
-                            Colors.white.withAlpha(100),
-                            BlendMode.lighten,
-                          ),
-                          child: const CircleAvatar(
-                            radius: 10,
-                            backgroundImage: AssetImage(
-                              "assets/profile_images/image1.jpeg",
+                        Column(
+                          children: [
+                            const CircleAvatar(
+                              radius: Sizes.size20,
+                              backgroundImage: AssetImage(
+                                "assets/profile_images/image1.jpeg",
+                              ),
                             ),
+                            Gaps.v10,
+                            Expanded(
+                              child: Container(
+                                width: Sizes.size2,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                            Gaps.v10,
+                            const FaIcon(
+                              FontAwesomeIcons.clipboard,
+                              size: Sizes.size20,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                        Gaps.h10,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "lakers",
+                                style: TextStyle(
+                                  fontSize: Sizes.size12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextField(
+                                controller: _textEditingController,
+                                autocorrect: false,
+                                focusNode: _focusNode,
+                                maxLines: null,
+                                minLines: null,
+                                textInputAction: TextInputAction.newline,
+                                decoration: const InputDecoration(
+                                  hintText: 'Start a thread...',
+                                  hintStyle: TextStyle(
+                                    fontSize: Sizes.size12,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
+                              ),
+                              Gaps.v10,
+                              const FaIcon(
+                                FontAwesomeIcons.paperclip,
+                                size: Sizes.size20,
+                                color: Colors.grey,
+                              ),
+                              Gaps.v32,
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    Gaps.h10,
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "jane_mobbin",
-                            style: TextStyle(
-                              fontSize: Sizes.size16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextField(
-                            controller: _textEditingController,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Start a thread...",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: Sizes.size16,
-                              ),
-                            ),
-                            cursorColor: Colors.blue,
-                          ),
-                          const FaIcon(FontAwesomeIcons.paperclip,
-                              color: Colors.grey, size: Sizes.size16)
-                        ],
-                      ),
-                    )
-                  ],
-                );
-              }),
-            ),
-            Positioned(
-              bottom: 0,
-              width: size.width,
-              child: BottomAppBar(
-                color: Colors.white,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Anyone can reply",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Text("Post",
-                        style: TextStyle(
-                          color: _textEditingController.text.isEmpty
-                              ? Colors.blue.shade200
-                              : Colors.blue,
-                          fontSize: Sizes.size16,
-                          fontWeight: FontWeight.bold,
-                        ))
-                  ],
+                  ),
                 ),
-              ),
-            )
-          ],
+                Gaps.v44,
+              ],
+            ),
+          ),
+          bottomSheet: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size16,
+              vertical: Sizes.size16,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Anyone can reply',
+                  style: TextStyle(
+                    fontSize: Sizes.size12,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Text(
+                    'Post',
+                    style: TextStyle(
+                      fontSize: Sizes.size14,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
