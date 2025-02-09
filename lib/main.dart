@@ -1,10 +1,15 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/screens/home_screen/home_screen.dart';
 import 'package:navigation_time/screens/main_navigation/main_navigation.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(DevicePreview(
+    builder: (BuildContext context) {
+      return const MyApp();
+    },
+  ));
 }
 
 class MyApp extends StatelessWidget {
