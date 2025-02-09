@@ -4,6 +4,7 @@ import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/screens/home_screen/home_screen.dart';
 import 'package:navigation_time/screens/main_navigation/widgets/nav_tab.dart';
 import 'package:navigation_time/screens/utils/appbar_icon.dart';
+import 'package:navigation_time/screens/write_screen/write_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -16,9 +17,24 @@ class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
 
   void _onTap(int index) {
+    if (index == 2) {
+      _onWriteTap();
+      return;
+    }
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void _onWriteTap() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const WriteScreen(),
+    );
   }
 
   @override
@@ -36,8 +52,12 @@ class _MainNavigationState extends State<MainNavigation> {
             Offstage(
               offstage: _selectedIndex != 1,
               child: Container(
-                color: Colors.red,
+                color: Colors.white,
               ),
+            ),
+            Offstage(
+              offstage: _selectedIndex != 2,
+              child: Container(),
             ),
           ],
         ),

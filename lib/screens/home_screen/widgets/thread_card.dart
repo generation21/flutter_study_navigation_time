@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:navigation_time/constant/gaps.dart';
 import 'package:navigation_time/constant/sizes.dart';
+import 'package:navigation_time/screens/home_screen/widgets/bottom_sheet_menu.dart';
 import 'package:navigation_time/screens/home_screen/widgets/image_swaper_card.dart';
 import 'package:navigation_time/screens/home_screen/widgets/reply_profiles.dart';
 
@@ -28,6 +29,16 @@ class ThreadCard extends StatelessWidget {
     required this.replyCount,
     required this.likeCount,
   });
+
+  void _onSheetButtonPressed(BuildContext context) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      showDragHandle: true,
+      builder: (context) => const BottomSheetMenu(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +136,7 @@ class ThreadCard extends StatelessWidget {
                                 ),
                                 Gaps.h10,
                                 GestureDetector(
-                                    onTap: () {},
+                                    onTap: () => _onSheetButtonPressed(context),
                                     child: const FaIcon(
                                       FontAwesomeIcons.ellipsis,
                                     ))

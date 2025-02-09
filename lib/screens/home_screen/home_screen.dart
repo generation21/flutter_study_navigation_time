@@ -1,11 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:navigation_time/constant/gaps.dart';
-import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/screens/home_screen/widgets/thread_card.dart';
-import 'package:navigation_time/screens/utils/appbar_icon.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -76,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       itemBuilder: (context, index) {
         return _threadCards[index];
       },
-      separatorBuilder: (context, index) {
+      separatorBuilder: (context, inex) {
         return Divider(
           color: Colors.grey.shade300,
           thickness: 1,
