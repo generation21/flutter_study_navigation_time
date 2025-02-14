@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:navigation_time/constant/sizes.dart';
+import 'package:navigation_time/screens/activity_screen/activity_screen.dart';
 import 'package:navigation_time/screens/home_screen/home_screen.dart';
 import 'package:navigation_time/screens/main_navigation/widgets/nav_tab.dart';
-import 'package:navigation_time/screens/utils/appbar_icon.dart';
+import 'package:navigation_time/screens/profile_screen/profile_screen.dart';
+import 'package:navigation_time/screens/profile_screen/profile_tab_navigator.dart';
+import 'package:navigation_time/screens/search_screen/search_screen.dart';
 import 'package:navigation_time/screens/write_screen/write_screen.dart';
+import 'package:navigation_time/screens/utils/appbar_icon.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -14,7 +18,7 @@ class MainNavigation extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigation> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
 
   void _onTap(int index) {
     if (index == 2) {
@@ -40,9 +44,11 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const AppbarIcon(),
-        ),
+        appBar: _selectedIndex == 0 || _selectedIndex == 2
+            ? AppBar(
+                title: const AppbarIcon(),
+              )
+            : null,
         body: Stack(
           children: [
             Offstage(
@@ -51,13 +57,19 @@ class _MainNavigationState extends State<MainNavigation> {
             ),
             Offstage(
               offstage: _selectedIndex != 1,
-              child: Container(
-                color: Colors.white,
-              ),
+              child: const SearchScreen(),
             ),
             Offstage(
               offstage: _selectedIndex != 2,
               child: Container(),
+            ),
+            Offstage(
+              offstage: _selectedIndex != 3,
+              child: const ActivityScreen(),
+            ),
+            Offstage(
+              offstage: _selectedIndex != 4,
+              child: const ProfileTabNavigator(),
             ),
           ],
         ),
