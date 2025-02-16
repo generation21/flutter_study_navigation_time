@@ -1,7 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:navigation_time/constant/gaps.dart';
 import 'package:navigation_time/constant/sizes.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:camera/camera.dart';
+import 'package:navigation_time/screens/camera_screen/camera_screen.dart'; // 카메라 페이지가 lib/camera_page.dart에 있다고 가정
 
 class WriteScreen extends StatefulWidget {
   const WriteScreen({super.key});
@@ -15,6 +20,9 @@ class _WriteScreenState extends State<WriteScreen> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   int lineCount = 1;
+
+  // 추가: 선택 또는 촬영한 이미지를 저장할 변수
+  File? _selectedImage;
 
   @override
   void initState() {
@@ -43,7 +51,6 @@ class _WriteScreenState extends State<WriteScreen> {
   }
 
   int computeLineCount(double availableWidth) {
-    // �ؽ�Ʈ�� ����ִٸ� �ּ� 1���̶� �����մϴ�.
     if (_textEditingController.text.isEmpty) {
       return 1;
     }
@@ -56,11 +63,106 @@ class _WriteScreenState extends State<WriteScreen> {
       maxLines: null,
     );
 
-    // �ִ� �ʺ� �����Ͽ� layout�� �����մϴ�.
     textPainter.layout(maxWidth: availableWidth);
 
-    // ���θ����� metrics�� ������ �� ��ü �� �� ���
     return textPainter.computeLineMetrics().length;
+  }
+
+  // 갤러리에서 이미지 선택
+  Future<void> _pickImageFromGallery() async {
+    // 갤러리 접근 권한 요청
+    PermissionStatus status = await Permission.photos.request();
+    if (!status.isGranted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('갤러리 접근 권한이 필요합니다.')),
+      );
+      return;
+    }
+
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  // 카메라로 사진 촬영
+  Future<void> _takePhoto() async {
+    // 카메라 접근 권한 요청
+    PermissionStatus permission = await Permission.camera.request();
+
+    // 권한이 거부된 경우
+    if (permission.isDenied || permission.isPermanentlyDenied) {
+      // 만약 사용자가 '다시 묻지 않음'을 선택했다면 앱 설정을 열도록 유도합니다.
+      if (permission.isPermanentlyDenied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('카메라 권한이 영구적으로 거부되었습니다.\n설정에서 권한을 허용해주세요.')),
+        );
+        openAppSettings();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('카메라 접근 권한이 필요합니다.')),
+        );
+      }
+      return;
+    }
+
+    // 사용 가능한 카메라 조회 후, 사진 촬영 페이지로 이동
+    final availableCams = await availableCameras();
+    if (availableCams.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('사용 가능한 카메라가 없습니다.')),
+      );
+      return;
+    }
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(camera: availableCams.first),
+      ),
+    );
+    if (result != null) {
+      setState(() {
+        _selectedImage = File(result);
+      });
+    }
+  }
+
+  // 하단 시트에서 카메라/갤러리 선택 옵션 제공
+  void _showImagePicker() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('갤러리 선택'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickImageFromGallery();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('카메라 촬영'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _takePhoto();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -174,13 +276,29 @@ class _WriteScreenState extends State<WriteScreen> {
                                   focusedBorder: InputBorder.none,
                                 ),
                               ),
-                              Gaps.v10,
-                              const FaIcon(
-                                FontAwesomeIcons.paperclip,
-                                size: Sizes.size20,
-                                color: Colors.grey,
+                              if (_selectedImage != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(
+                                      _selectedImage!,
+                                      width: size.width,
+                                      height: size.width * 0.6,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              GestureDetector(
+                                onTap: _showImagePicker,
+                                child: const FaIcon(
+                                  FontAwesomeIcons.paperclip,
+                                  size: Sizes.size20,
+                                  color: Colors.grey,
+                                ),
                               ),
-                              Gaps.v32,
+                              Gaps.v10,
+                              // 선택한 이미지 미리보기 (있을 때만)
                             ],
                           ),
                         ),
