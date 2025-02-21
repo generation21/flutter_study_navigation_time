@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navigation_time/screens/home_screen/widgets/thread_card.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const String routeName = '';
   const HomeScreen({super.key});
 
   @override

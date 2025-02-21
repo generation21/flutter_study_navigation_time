@@ -3,10 +3,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:navigation_time/constant/gaps.dart';
 import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/screens/activity_screen/widgets/activity_list_view.dart';
+import 'package:navigation_time/utils.dart';
 
 enum ActivityType { replies, metions, likes, follows }
 
 class ActivityScreen extends StatefulWidget {
+  static const String routeName = 'activity';
+
   const ActivityScreen({super.key});
 
   @override
@@ -100,19 +103,26 @@ class _ActivityScreenState extends State<ActivityScreen>
       padding: const EdgeInsets.symmetric(horizontal: Sizes.size12),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Activity"),
+          title: Text(
+            "Activity",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: Sizes.size32,
+              color: isDarkMode(context) ? Colors.white : Colors.black,
+            ),
+          ),
           centerTitle: false,
-          titleTextStyle: const TextStyle(
+          titleTextStyle: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: Sizes.size32,
-            color: Colors.black,
+            color: isDarkMode(context) ? Colors.white : Colors.black,
           ),
           bottom: TabBar(
             padding: EdgeInsets.zero,
             dividerHeight: 0,
             tabAlignment: TabAlignment.start,
             controller: _tabController,
-            labelColor: Colors.white,
+            labelColor: isDarkMode(context) ? Colors.white : Colors.black,
             labelStyle: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -120,18 +130,22 @@ class _ActivityScreenState extends State<ActivityScreen>
             splashFactory: NoSplash.splashFactory,
             isScrollable: true,
             indicatorSize: TabBarIndicatorSize.label,
-            indicatorColor: Colors.transparent,
+            indicatorColor: isDarkMode(context) ? Colors.white : Colors.black,
             indicator: BoxDecoration(
-              color: Colors.black,
+              color: isDarkMode(context) ? Colors.grey.shade800 : Colors.white,
               borderRadius: BorderRadius.circular(Sizes.size12),
             ),
-            unselectedLabelColor: Colors.black,
+            unselectedLabelColor:
+                isDarkMode(context) ? Colors.white : Colors.black,
             tabs: [
               Container(
                 width: Sizes.size96,
                 decoration: _tabController.index != 0
                     ? BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
+                        border: Border.all(
+                            color: isDarkMode(context)
+                                ? Colors.grey.shade800
+                                : Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(Sizes.size12),
                       )
                     : null,
@@ -144,7 +158,10 @@ class _ActivityScreenState extends State<ActivityScreen>
                   width: Sizes.size96,
                   decoration: _tabController.index != index + 1
                       ? BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
+                          border: Border.all(
+                              color: isDarkMode(context)
+                                  ? Colors.grey.shade800
+                                  : Colors.grey.shade300),
                           borderRadius: BorderRadius.circular(Sizes.size12),
                         )
                       : null,

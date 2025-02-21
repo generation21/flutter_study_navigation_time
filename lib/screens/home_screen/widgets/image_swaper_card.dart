@@ -12,17 +12,16 @@ class ImageSwaperCard extends StatefulWidget {
 class _ImageSwaperCardState extends State<ImageSwaperCard>
     with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
-  late final AnimationController _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 300),
-  );
+  late AnimationController _animationController;
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-
-    // 페이지 변경 감지
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
     _pageController.addListener(() {
       setState(() {
         _currentPage = _pageController.page?.round() ?? 0;

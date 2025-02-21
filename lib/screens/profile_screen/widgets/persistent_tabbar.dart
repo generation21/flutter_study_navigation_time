@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:navigation_time/constant/sizes.dart';
+import 'package:navigation_time/view_models/dark_model_config_vm.dart';
+import 'package:provider/provider.dart';
 
 class PersistentTabBar extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Colors.white,
+      color: context.watch<DarkModeConfigViewModel>().isDarkMode
+          ? Colors.black
+          : Colors.white,
       child: Column(
         children: [
-          const TabBar(
+          TabBar(
             dividerColor: Colors.transparent,
-            indicatorColor: Colors.black,
-            labelPadding: EdgeInsets.only(bottom: Sizes.size10),
+            indicatorColor: context.watch<DarkModeConfigViewModel>().isDarkMode
+                ? Colors.white
+                : Colors.black,
+            labelPadding: const EdgeInsets.only(bottom: Sizes.size10),
             indicatorSize: TabBarIndicatorSize.tab,
-            labelColor: Colors.black,
-            labelStyle:
-                TextStyle(fontSize: Sizes.size20, fontWeight: FontWeight.bold),
+            labelColor: context.watch<DarkModeConfigViewModel>().isDarkMode
+                ? Colors.white
+                : Colors.black,
+            labelStyle: const TextStyle(
+                fontSize: Sizes.size20, fontWeight: FontWeight.bold),
             unselectedLabelColor: Colors.grey,
             tabs: [
-              Text("Threads"),
-              Text("Replies"),
+              const Text("Threads"),
+              const Text("Replies"),
             ],
           ),
           Divider(height: Sizes.size1, color: Colors.grey.shade300),
@@ -37,6 +45,6 @@ class PersistentTabBar extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }

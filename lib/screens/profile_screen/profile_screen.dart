@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:navigation_time/constant/gaps.dart';
 import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/screens/home_screen/widgets/reply_profiles.dart';
 import 'package:navigation_time/screens/profile_screen/settings_screen.dart';
 import 'package:navigation_time/screens/profile_screen/widgets/persistent_tabbar.dart';
 import 'package:navigation_time/screens/profile_screen/widgets/replies_list.dart';
+import 'package:navigation_time/utils.dart';
 
 class ProfileScreen extends StatefulWidget {
+  static const String routeName = 'profile';
+
   const ProfileScreen({super.key});
 
   @override
@@ -31,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void onSettingsPressed() {
-    Navigator.of(context).pushNamed('/settings');
+    context.go('/profile/settings');
   }
 
   @override
@@ -92,14 +96,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       vertical: Sizes.size4,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade100,
+                                      color: isDarkMode(context)
+                                          ? Colors.grey.shade800
+                                          : Colors.grey.shade100,
                                       borderRadius:
                                           BorderRadius.circular(Sizes.size16),
                                     ),
                                     child: Text(
                                       "treads.net",
                                       style: TextStyle(
-                                        color: Colors.grey.shade400,
+                                        color: isDarkMode(context)
+                                            ? Colors.grey.shade400
+                                            : Colors.grey.shade600,
                                       ),
                                     ),
                                   ),

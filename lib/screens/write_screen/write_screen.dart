@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:navigation_time/constant/gaps.dart';
 import 'package:navigation_time/constant/sizes.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:navigation_time/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 import 'package:navigation_time/screens/camera_screen/camera_screen.dart'; // 카메라 페이지가 lib/camera_page.dart에 있다고 가정
@@ -180,7 +181,6 @@ class _WriteScreenState extends State<WriteScreen> {
       ),
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: Colors.white,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -193,18 +193,17 @@ class _WriteScreenState extends State<WriteScreen> {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               onPressed: () => Navigator.pop(context),
-              child: const Text(
+              child: Text(
                 'Cancel',
                 style: TextStyle(
-                  color: Colors.black,
                   fontSize: 16,
+                  color: isDarkMode(context) ? Colors.white : Colors.black,
                 ),
               ),
             ),
             title: const Text(
               'New thread',
               style: TextStyle(
-                color: Colors.black,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),

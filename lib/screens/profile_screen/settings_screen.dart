@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/screens/profile_screen/privacy_screen.dart';
+import 'package:navigation_time/view_models/dark_model_config_vm.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
+  static const String routeName = 'settings';
+
   const SettingsScreen({super.key});
 
   @override
@@ -30,7 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leading: Row(
           children: [
             IconButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.go('/profile'),
               icon: const FaIcon(FontAwesomeIcons.angleLeft),
             ),
             const Text("Back"),
@@ -47,6 +52,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
+          ListTile(
+            title: const Text("Dark mode"),
+            leading: context.watch<DarkModeConfigViewModel>().isDarkMode
+                ? const FaIcon(FontAwesomeIcons.sun)
+                : const FaIcon(FontAwesomeIcons.moon),
+            trailing: Switch.adaptive(
+              value: context.watch<DarkModeConfigViewModel>().isDarkMode,
+              onChanged: (value) {
+                context.read<DarkModeConfigViewModel>().setDarkMode(value);
+              },
+              activeColor: Colors.lightGreenAccent,
+            ),
+          ),
           const ListTile(
             leading: FaIcon(FontAwesomeIcons.userPlus),
             title: Text("Follow and invite friends"),
@@ -58,7 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const FaIcon(FontAwesomeIcons.lock),
             title: const Text("Privacy"),
-            onTap: () => Navigator.of(context).pushNamed('/privacy'),
+            onTap: () => context.go('/profile/privacy'),
           ),
           const ListTile(
             leading: FaIcon(FontAwesomeIcons.circleUser),

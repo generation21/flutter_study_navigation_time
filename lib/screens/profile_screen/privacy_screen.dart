@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:navigation_time/constant/gaps.dart';
 import 'package:navigation_time/constant/sizes.dart';
+import 'package:navigation_time/utils.dart';
 
 class PrivacyScreen extends StatefulWidget {
+  static const String routeName = 'privacy';
+
   const PrivacyScreen({super.key});
 
   @override
@@ -25,12 +29,12 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text('Privacy'),
         leadingWidth: Sizes.size96,
         leading: Row(
           children: [
             IconButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => context.go('/profile/settings'),
               icon: const FaIcon(FontAwesomeIcons.angleLeft),
             ),
             const Text("Back"),
@@ -53,7 +57,7 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
             trailing: Switch.adaptive(
               value: _notifications,
               onChanged: _onNotificationsChanged,
-              activeColor: Colors.black,
+              activeColor: isDarkMode(context) ? Colors.white : Colors.black,
             ),
           ),
           ListTile(

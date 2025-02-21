@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/screens/activity_screen/activity_screen.dart';
 import 'package:navigation_time/screens/home_screen/home_screen.dart';
@@ -9,22 +10,36 @@ import 'package:navigation_time/screens/profile_screen/profile_tab_navigator.dar
 import 'package:navigation_time/screens/search_screen/search_screen.dart';
 import 'package:navigation_time/screens/write_screen/write_screen.dart';
 import 'package:navigation_time/screens/utils/appbar_icon.dart';
+import 'package:navigation_time/utils.dart';
 
 class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key});
+  final String tab;
+  const MainNavigation({super.key, required this.tab});
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
 }
 
 class _MainNavigationState extends State<MainNavigation> {
-  int _selectedIndex = 4;
+  final List<String> _tabs = [
+    "",
+    "search",
+    "write",
+    "activity",
+    "profile",
+    "settings",
+    "privacy",
+  ];
+
+  late int _selectedIndex = _tabs.indexOf(widget.tab);
 
   void _onTap(int index) {
     if (index == 2) {
       _onWriteTap();
       return;
     }
+
+    context.go("/${_tabs[index]}");
     setState(() {
       _selectedIndex = index;
     });
@@ -68,8 +83,10 @@ class _MainNavigationState extends State<MainNavigation> {
               child: const ActivityScreen(),
             ),
             Offstage(
-              offstage: _selectedIndex != 4,
-              child: const ProfileTabNavigator(),
+              offstage: _selectedIndex != 4 &&
+                  _selectedIndex != 5 &&
+                  _selectedIndex != 6,
+              child: ProfileTabNavigator(tab: _tabs[_selectedIndex]),
             ),
           ],
         ),
@@ -79,12 +96,14 @@ class _MainNavigationState extends State<MainNavigation> {
             Container(
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.grey.shade300),
+                  top: BorderSide(
+                      color: isDarkMode(context)
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade300),
                 ),
               ),
             ),
             BottomAppBar(
-              color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Sizes.size16),
                 child: Row(

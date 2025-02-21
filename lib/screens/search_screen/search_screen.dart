@@ -6,6 +6,8 @@ import 'package:navigation_time/icons/certification_icon.dart';
 import 'package:navigation_time/screens/search_screen/widgets/follow_list_tile.dart';
 
 class SearchScreen extends StatefulWidget {
+  static const String routeName = 'search';
+
   const SearchScreen({super.key});
 
   @override
