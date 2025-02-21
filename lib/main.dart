@@ -1,5 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/repos/dark_model_config_repo.dart';
@@ -12,27 +13,28 @@ void main() async {
   final preferences = await SharedPreferences.getInstance();
   final repository = DarkModeRepository(preferences);
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-          create: (context) => DarkModeConfigViewModel(repository)),
-    ],
-    child: DevicePreview(
-      builder: (BuildContext context) {
-        return const MyApp();
-      },
-    ),
+  runApp(DevicePreview(
+    builder: (BuildContext context) {
+      return ProviderScope(
+        overrides: [
+          darkModeConfigProvider.overrideWith(
+            () => DarkModeConfigViewModel(repository),
+          ),
+        ],
+        child: const MyApp(),
+      );
+    },
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       routerConfig: router,
-      themeMode: context.watch<DarkModeConfigViewModel>().isDarkMode
+      themeMode: ref.watch(darkModeConfigProvider).isDarkMode
           ? ThemeMode.dark
           : ThemeMode.light,
       title: 'Onboarding Flow part',

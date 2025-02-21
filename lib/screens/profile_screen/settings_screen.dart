@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:navigation_time/constant/sizes.dart';
@@ -7,16 +8,16 @@ import 'package:navigation_time/screens/profile_screen/privacy_screen.dart';
 import 'package:navigation_time/view_models/dark_model_config_vm.dart';
 import 'package:provider/provider.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   static const String routeName = 'settings';
 
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  SettingsScreenState createState() => SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _notifications = false;
 
   void _onNotificationsChanged(bool? newValue) {
@@ -54,13 +55,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           ListTile(
             title: const Text("Dark mode"),
-            leading: context.watch<DarkModeConfigViewModel>().isDarkMode
+            leading: ref.watch(darkModeConfigProvider).isDarkMode
                 ? const FaIcon(FontAwesomeIcons.sun)
                 : const FaIcon(FontAwesomeIcons.moon),
             trailing: Switch.adaptive(
-              value: context.watch<DarkModeConfigViewModel>().isDarkMode,
+              value: ref.watch(darkModeConfigProvider).isDarkMode,
               onChanged: (value) {
-                context.read<DarkModeConfigViewModel>().setDarkMode(value);
+                ref.read(darkModeConfigProvider.notifier).setDarkMode(value);
               },
               activeColor: Colors.lightGreenAccent,
             ),
