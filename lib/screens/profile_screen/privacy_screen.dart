@@ -8,6 +8,7 @@ import 'package:navigation_time/utils.dart';
 
 class PrivacyScreen extends StatefulWidget {
   static const String routeName = 'privacy';
+  static const String routeURL = '/settings/privacy';
 
   const PrivacyScreen({super.key});
 

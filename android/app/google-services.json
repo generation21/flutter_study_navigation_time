@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "956020719756",
+    "project_id": "flutter-titok-xyz",
+    "storage_bucket": "flutter-titok-xyz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956020719756:android:c49c97d8599a0de73e3ba9",
+        "android_client_info": {
+          "package_name": "com.example.navigation_time"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU3ddes_ZlY-C7CMkSAgTGeh2ZTRKrrcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

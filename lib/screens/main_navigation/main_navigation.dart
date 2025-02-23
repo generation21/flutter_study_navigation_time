@@ -22,7 +22,7 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   final List<String> _tabs = [
-    "",
+    "home",
     "search",
     "write",
     "activity",

@@ -4,12 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:navigation_time/constant/sizes.dart';
+import 'package:navigation_time/repos/authentication_repo.dart';
+import 'package:navigation_time/screens/login_screen.dart';
 import 'package:navigation_time/screens/profile_screen/privacy_screen.dart';
 import 'package:navigation_time/view_models/dark_model_config_vm.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   static const String routeName = 'settings';
+  static const String routeURL = '/settings';
 
   const SettingsScreen({super.key});
 
@@ -114,7 +117,11 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
                         icon: const FaIcon(FontAwesomeIcons.car),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          ref.read(authRepo).signOut();
+
+                          context.go(LoginScreen.routeURL);
+                        },
                         child: const Text("Yes"),
                       ),
                     ],
@@ -132,7 +139,10 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
                         child: const Text("No"),
                       ),
                       CupertinoDialogAction(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          ref.read(authRepo).signOut();
+                          context.go(LoginScreen.routeURL);
+                        },
                         isDestructiveAction: true,
                         child: const Text("Yes"),
                       ),

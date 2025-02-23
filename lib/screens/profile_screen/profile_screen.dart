@@ -11,6 +11,7 @@ import 'package:navigation_time/utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String routeName = 'profile';
+  static const String routeURL = '/profile';
 
   const ProfileScreen({super.key});
 
@@ -35,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   void onSettingsPressed() {
-    context.go('/profile/settings');
+    context.go(SettingsScreen.routeURL);
   }
 
   @override

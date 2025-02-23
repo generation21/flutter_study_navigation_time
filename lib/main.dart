@@ -1,6 +1,8 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:navigation_time/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:navigation_time/constant/sizes.dart';
 import 'package:navigation_time/repos/dark_model_config_repo.dart';
@@ -10,6 +12,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   final preferences = await SharedPreferences.getInstance();
   final repository = DarkModeRepository(preferences);
 
@@ -33,7 +40,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
-      routerConfig: router,
+      routerConfig: ref.watch(routerProvider),
       themeMode: ref.watch(darkModeConfigProvider).isDarkMode
           ? ThemeMode.dark
           : ThemeMode.light,
